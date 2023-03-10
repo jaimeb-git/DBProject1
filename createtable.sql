@@ -54,7 +54,7 @@ CREATE TABLE Booked
 .import Train.csv Train
 .import Train_status.csv Train_status
 .import Passenger.csv Passenger
-.import booked.csv Booked
+.import Booked.csv Booked
 
 .mode column
 .header on
