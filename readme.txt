@@ -1,7 +1,7 @@
 ---CSE 3330 Project 1---
 Harrison Young 1001847213
 Lauren Eyum 1001859094
-Jaime Barajas
+Jaime Barajas 1001746942
 
 
 ---Tools Used to Create Project---
