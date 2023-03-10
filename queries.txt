@@ -17,4 +17,41 @@ select first_name, last_name from Passenger P, Train T, Booked B, Train_status S
 
 
 
-4. User input the age of the passenger (50 to 60) and display the train information (Train Number, Train Name, Source and Destination) and passenger information (Name, Address, Category, ticket status) of passengers who are between the ages of 50 to 60. 
+4. User input the age of the passenger (50 to 60) and display the train information (Train Number, Train Name, Source and Destination) and passenger information (Name, Address, Category, ticket status) of passengers who are between the ages of 50 to 60.
+SELECT 
+  Train.train_number, 
+  Train.train_name, 
+  Train.source_station, 
+  Train.destination_station, 
+  Passenger.first_name, 
+  Passenger.last_name, 
+  Passenger.address, 
+  CASE 
+    WHEN strftime('%Y', 'now') - strftime('%Y', Passenger.bdate) BETWEEN 50 AND 60 
+    THEN '50-60'
+    ELSE 'Other' 
+  END AS category, 
+  Booked.ticket_type, 
+  Booked.status 
+FROM 
+  Train 
+  JOIN Booked ON Train.train_number = Booked.train_number 
+  JOIN Passenger ON Booked.passenger_ssn = Passenger.ssn 
+WHERE 
+  Passenger.bdate BETWEEN '1973-03-10' AND '2003-03-10';
+  
+5.
+SELECT Train.train_name, Train.available_on AS day, COUNT(Booked.train_number) AS num_passengers
+FROM Train
+JOIN Booked ON Train.train_number = Booked.train_number AND Booked.status = 'Booked'
+GROUP BY Train.train_name, day
+ORDER BY day, Train.train_name;
+
+6.
+SELECT Passenger.first_name, Passenger.last_name
+FROM Passenger
+INNER JOIN Booked ON Passenger.ssn = Booked.passenger_ssn
+INNER JOIN Train ON Train.train_number = Booked.train_number
+WHERE Booked.status = 'Booked' AND Train.train_name = 'Flying Scotsman';
+
+
