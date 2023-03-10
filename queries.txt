@@ -1,0 +1,20 @@
+SQL Queries:
+
+2. Input a passenger’s last name and first name and retrieve all trains they are booked on.
+
+
+select train_name from Train T, Booked B, Passenger P where P.first_name = 'Fletcher' AND P.last_name = 'Flosi' AND P.ssn = B.passenger_ssn AND B.train_number = T.train_number;
+
+
+
+
+3. Input the Day and list the passengers travelling on that day with confirmed tickets. 
+
+
+select first_name, last_name from Passenger P, Train T, Booked B, Train_status S where S.train_date = '20/02/2022' AND S.train_name = T.train_name AND T.train_number = B.train_number AND B.passenger_ssn = P.ssn AND B.status = 'Booked';
+
+
+
+
+
+4. User input the age of the passenger (50 to 60) and display the train information (Train Number, Train Name, Source and Destination) and passenger information (Name, Address, Category, ticket status) of passengers who are between the ages of 50 to 60. 
