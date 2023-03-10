@@ -1,38 +1,114 @@
 SQL Queries:
 
+
 2. Input a passenger’s last name and first name and retrieve all trains they are booked on.
 
-select train_name from Train T, Booked B, Passenger P where P.first_name = 'Fletcher' AND P.last_name = 'Flosi' AND P.ssn = B.passenger_ssn AND B.train_number = T.train_number;
+
+SELECT train_name
+FROM Train T, Booked B, Passenger P
+WHERE 
+  P.first_name = 'Fletcher' AND P.last_name = 'Flosi'
+  AND P.ssn = B.passenger_ssn AND B.train_number = T.train_number;
 
 
 
 3. Input the Day and list the passengers travelling on that day with confirmed tickets. 
 
-select first_name, last_name from Passenger P, Train T, Booked B, Train_status S where S.train_date = '20/02/2022' AND S.train_name = T.train_name AND T.train_number = B.train_number AND B.passenger_ssn = P.ssn AND B.status = 'Booked';
+
+
+SELECT first_name, last_name
+FROM Passenger P, Train T, Booked B, Train_status S
+WHERE
+  S.train_date = '20/02/2022' AND S.train_name = T.train_name
+  AND T.train_number = B.train_number AND B.passenger_ssn = P.ssn
+  AND B.status = 'Booked';
 
 
 
-4. User input the age of the passenger (50 to 60) and display the train information (Train Number, Train Name, Source and Destination) and passenger information (Name, Address, Category, ticket status) of passengers who are between the ages of 50 to 60. 
 
+4. User input the age of the passenger (50 to 60) and display the train information (Train Number, Train Name, Source and Destination) and passenger information (Name, Address, Category, ticket status) of passengers who are between the ages of 50 to 60.
+
+
+
+SELECT 
+  Train.train_number, 
+  Train.train_name, 
+  Train.source_station, 
+  Train.destination_station, 
+  Passenger.first_name, 
+  Passenger.last_name, 
+  Passenger.address, 
+  CASE 
+    WHEN strftime('%Y', 'now') - strftime('%Y', Passenger.bdate) BETWEEN 50 AND 60 
+    THEN '50-60'
+    ELSE 'Other' 
+  END AS category, 
+  Booked.ticket_type, 
+  Booked.status 
+FROM 
+  Train 
+  JOIN Booked ON Train.train_number = Booked.train_number 
+  JOIN Passenger ON Booked.passenger_ssn = Passenger.ssn 
+WHERE 
+  Passenger.bdate BETWEEN '1973-03-10' AND '2003-03-10';
+
+
+
+ 
+5. List train name, day and number of passenger on that train. 
+
+
+
+SELECT Train.train_name, Train.available_on AS day, COUNT(Booked.train_number) AS num_passengers
+FROM Train
+JOIN Booked ON Train.train_number = Booked.train_number AND Booked.status = 'Booked'
+GROUP BY Train.train_name, day
+ORDER BY day, Train.train_name;
+
+
+
+
+6. Enter a train name and retrieve all the passengers with confirmed status traveling in that train.
+
+
+
+SELECT Passenger.first_name, Passenger.last_name
+FROM Passenger
+INNER JOIN Booked ON Passenger.ssn = Booked.passenger_ssn
+INNER JOIN Train ON Train.train_number = Booked.train_number
+WHERE Booked.status = 'Booked' AND Train.train_name = 'Flying Scotsman';
 
 
 
 
 7. List passengers that are waitlisted including the name of the train.
 
-SELECT first_name, last_name, train_name FROM Passenger P, Booked B, Train T WHERE B.status = 'WaitL' AND B.passenger_ssn = P.ssn AND B.train_number = T.train_number;
+
+
+SELECT first_name, last_name, train_name
+FROM Passenger P, Booked B, Train T
+WHERE
+  B.status = 'WaitL' AND B.passenger_ssn = P.ssn
+  AND B.train_number = T.train_number;
 
 
 
 8. List passengers that have '605' phone area code in descending order.
 
-SELECT first_name, last_name FROM Passenger P WHERE P.phone LIKE '%605%' ORDER BY P.first_name DESC, P.last_name DESC;
+
+
+SELECT first_name, last_name
+FROM Passenger P
+WHERE P.phone LIKE '%605%' ORDER BY P.first_name DESC, P.last_name DESC;
 
 
 
 9. List name of passengers that are traveling on Thursdays in ascending order.
 
-SELECT first_name, last_name FROM Passenger P, Booked B, Train T WHERE T.available_on LIKE '%Thursday%' AND B.passenger_ssn = P.ssn AND T.train_number = B.train_number ORDER BY first_name ASC, last_name ASC;
 
 
-
+SELECT first_name, last_name
+FROM Passenger P, Booked B, Train T
+WHERE
+  T.available_on LIKE '%Thursday%' AND B.passenger_ssn = P.ssn
+  AND T.train_number = B.train_number ORDER BY first_name ASC, last_name ASC;
